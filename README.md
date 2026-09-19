@@ -1,77 +1,61 @@
-# Dimension-Paired Lattice Enumeration
+# Dimension-Paired Lattice Framework
 
-> **Asymptotic $\mathcal{O}(r^2)$ Complexity Collapse and Generalized $\mathcal{O}(r^2 \log_2 N \log r)$ Convolution for High-Dimensional Discrete Spherical domains.**
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22509388.svg)](https://doi.org/10.5281/zenodo.22509388)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repository houses the official implementations and benchmark suites for the dimension-paired combinatorial framework. By exploiting coordinate isotropy and partitioning high-dimensional Euclidean spaces ($\mathbb{Z}^N$) into orthogonal, symmetric lower-dimensional submanifolds, this framework completely breaks the "curse of dimensionality" for discrete lattice point enumeration.
-
-![Dimension Bisection Tree Schema](dimension-bisection-tree.png)
-
----
-
-## ⚡ The Breakthrough at a Glance
-
-Traditional spatial grid sweeps scale exponentially as $\mathcal{O}(r^N)$ to count the integer coordinates satisfying $\sum_{i=1}^N x_i^2 \le r^2$. For a 4D hypersphere at radius $r = 10,000$, a brute-force sweep evaluates over **$1.6 \times 10^{17}$ coordinates**—a calculation that grinds on modern CPUs for over two years. 
-
-By decomposing 4-space into two orthogonal 2D planes, precomputing the identical 2D spatial profile once in $\mathcal{O}(r^2)$, and performing a discrete combinatorial cross-convolution, **the time complexity drops strictly to $\mathcal{O}(r^2)$**. 
-
-When generalized to arbitrary dimensions via recursive binary bisections and **Number Theoretic Transforms (NTT)** over finite fields, the framework locks the time complexity of an $N$-dimensional ball to a quasi-quadratic limit of:
-$$\mathcal{O}(r^2 \log_2 N \log r)$$
-
----
-
-## 📊 Empirical Hardware Performance
-
-These benchmarks demonstrate the performance divergence between traditional brute-force sweeps and our dimension-paired algorithms, executing strictly on single-core consumer processors utilizing native **Arithmetic Logic Unit (ALU)** integer math (no floating-point operations, no square roots in the loop).
-
-### 4D Hypersphere Enumeration Benchmark ($\mathbb{Z}^4$)
-*   **Radius ($r$):** $10,000$
-*   **Exact Lattice Count ($V_{4D}$):** $49,348,022,079,085,897$ points
-*   **Traditional $\mathcal{O}(r^4)$ Sweep:** **2.53 Julian Years** (Est. at 2B evaluations/sec)
-*   **Dimension-Paired $\mathcal{O}(r^2)$ Engine:** **6.06 Seconds** (Bit-perfect, verified match)
-*   **Empirical Hardware Speedup:** **$\mathbf{1.31 \times 10^7\times}$ faster**
-
-### 3D Ellipsoid Row-Collapse Benchmark ($\mathbb{Z}^3$)
-*   **Radius ($r$):** $2,000$
-*   **Exact Lattice Count ($V_{3D}$):** $268,116,095,263$ points
-*   **Traditional $\mathcal{O}(r^3)$ Sweep:** **516,148 ms** (8.6 Minutes)
-*   **Row-Collapse $\mathcal{O}(r^2)$ Engine:** **1,542 ms** (1.5 Seconds)
-*   **Empirical Hardware Speedup:** **$\mathbf{334.7\times}$ faster**
-
----
-
-## 🛠️ Getting Started & Quickstart
-
-All calculations run entirely on integer ALUs, bypassing Floating-Point Units (FPUs). This makes them highly optimized for restricted hardware, embedded systems, radiation-hardened spaceflight chips, and real-time graphics engines.
-
-### 🐍 Python Verification (2D & 4D Audit)
-Verify the exact rational discrete estimators of $\pi$ and spatial counts using Python 3.12+ (standard library only):
-
+## Quickstart Compilation
+Compile and run the FPU-free C++20 benchmark executing the 4D dimension-paired engine at scale:
 ```bash
-# Run the 4D dimension-paired validation
-python3 count_4d.py
+g++ -O3 -std=c++20 benchmark_4d.cpp -o benchmark && ./benchmark
 ```
 
-### 🚀 C++ Hardware Benchmark
-To run the high-performance C++20 benchmark executing the 4D dimension-paired engine at scale ($r = 500$):
+**Discrete Geometry First: Collapsing High-Dimensional Lattice Enumeration from O(r^N) to Quasi-Quadratic O(r^2 log_2 N log r)**
 
-```bash
-# Compile with maximum compiler optimizations
-g++ -O3 -std=c++20 benchmark_4d.cpp -o benchmark_4d
+For over two centuries, the standard approach to discrete lattice point enumeration has relied on continuous Euclidean tools—transcendental functions, Bessel expansions, modular forms, and floating-point approximations—projected onto integer grids[cite: 4, 15]. This approach frequently runs into boundary-vertex collisions, floating-point precision drift, and the classical exponential coordinate bottleneck[cite: 4, 17].
 
-# Execute the FPU-Free benchmark
-./benchmark_4d
-```
+Instead of forcing continuous calculus onto discrete space, I developed an integer-native geometric framework that treats discrete grids on their own native algebraic terms[cite: 4, 15]. By recognizing that squared Euclidean distance is additively separable across orthogonal submanifolds, high-dimensional boundaries can be decoupled and evaluated via single-pass integer dot products and discrete cross-convolutions[cite: 8, 10].
+
+The complete research suite consists of four preprints establishing the theoretical derivations, asymptotic complexity proofs, and hardware-native C++ reference implementations:
+
+*   **Paper I: The Orthotropic Boundary & Parity Foundations**
+    *   *Core Premise:* Couples orthotropic boundaries 4r ± 1 to construct Diophantine parity constraints that mathematically prohibit boundary-vertex collisions[cite: 6, 15].
+    *   *Result:* Resolves boundary discrepancy and derives a deterministic, rational convergence envelope for discrete π_d ∈ ℚ[cite: 6, 15].
+    *   *Zenodo DOI:* [10.5281/zenodo.22282210](https://doi.org/10.5281/zenodo.22282210)[cite: 4, 6] | *GitHub:* [Orthotropic-Lattice-Framework](https://github.com/Andrew-J-Morris/Orthotropic-Lattice-Framework)[cite: 6]
+
+*   **Paper II: Dimension-Pairing & Generalized Convolutions**
+    *   *Core Premise:* Decomposes 4D space as orthogonal planes (Z^4 ≅ Z^2 × Z^2), reducing 4-space enumeration from O(r^4) to a single-pass 1D dot product in strict O(r^2) without floating-point operations[cite: 5, 8].
+    *   *Generalization:* Applies recursive bisection via Number Theoretic Transforms (NTT) in finite fields Z_p[t], collapsing N-dimensional ball enumeration to O(r^2 log_2 N log r)[cite: 5, 8].
+    *   *Zenodo DOI:* [10.5281/zenodo.22509388](https://doi.org/10.5281/zenodo.22509388)[cite: 5] | *GitHub:* [dimension-paired-lattice-framework](https://github.com/Andrew-J-Morris/dimension-paired-lattice-framework)[cite: 5]
+
+*   **Paper III: Odd-Dimension Slicing & Hardware Scaling**
+    *   *Core Premise:* Neutralizes the historical odd-dimension class-number barrier for Z^5 and Z^7 by slicing 1D axial profiles against precomputed even-dimensional hyperdisk profiles[cite: 9, 10].
+    *   *Empirical Scaling:* Verifies sequences against OEIS baselines (A000333–A000336), and benchmarks a 1024-dimensional R = 2896 hyperball (output = 831168560 (mod 998244353)) in 1561.833 ms on a single desktop core[cite: 9, 10].
+    *   *Zenodo DOI:* [10.5281/zenodo.22691273](https://doi.org/10.5281/zenodo.22691273)[cite: 9] | *GitHub:* [Hierarchical-Dimension-Pairing-Framework](https://github.com/Andrew-J-Morris/Hierarchical-Dimension-Pairing-Framework)
+
+*   **Paper IV: Optimal $D_N$ Packings & Parity-Filtered Bisection**
+    *   *Core Premise:* Extends the bisection architecture beyond primitive grids to dense, non-orthogonal kissing-number lattices[cite: 3, 14]. By redefining geometries as parity-constrained sublattices of Z^N (∑ x_i ≡ 0 (mod 2)), internal coordinate staggering is fully absorbed into pre-filtered arrays[cite: 3, 14].
+    *   *Result:* Achieves hardware-native O(r^2) exact enumeration for Face-Centered Cubic (D_3), the 24-cell honeycomb (D_4), and the D_8 root lattice, verified bit-for-bit against OEIS A005875, A004011, and A004013[cite: 3].
+    *   *Zenodo DOI:* [10.5281/zenodo.22824219](https://doi.org/10.5281/zenodo.22824219) | *GitHub:* [Parity-Filtered-Bisection-DN-Lattices](https://github.com/Andrew-J-Morris/Parity-Filtered-Bisection-DN-Lattices)
+
+**The Empirical Validation**
+
+The C++ implementations are designed as self-contained, reproducible test benches running exclusively on 64-bit integer ALUs with zero floating-point emulation:
+*   Resolving 246+ million points in the 4D 24-cell honeycomb at R=100 in 2 ms on consumer hardware.
+*   Pushing the finite-field Number Theoretic Transform (NTT) bisection tree to its theoretical single-prime 2-adic ceiling (R = 2896, transform size M = 2^23), evaluating a 1024-dimensional hyperball across an 8.38-million-element ring in 1,561 ms on a single desktop core.
+*   Evaluating 7-dimensional bounding hyperballs from R = 0..5000, culminating in a bit-perfect 27-digit lattice point count, thereby extending OEIS A055413 from R = 0..500 to R = 0..5000.
+
+All four preprints, source code, and benchmark suites are open-access. Feedback on the combinatorial proofs, algorithmic bounds, and hardware pipelining is welcome.
 
 ---
 
-## 📚 Academic Publications
+### The Discrete Lattice Research Suite
+This repository is part of a 4-paper research program establishing hardware-native, integer-only lattice enumeration:
 
-This repository implements the algorithms, proofs, and hardware benchmarks detailed in the following preprints:
+1. **[Orthotropic-Lattice-Framework](https://github.com/Andrew-J-Morris/Orthotropic-Lattice-Framework):** 3D row-collapse, 4r ± 1 parity bounds, and rational π_d ∈ ℚ convergence. [[Zenodo DOI: 10.5281/zenodo.22282210](https://doi.org/10.5281/zenodo.22282210)]
+2. **[dimension-paired-lattice-framework](https://github.com/Andrew-J-Morris/dimension-paired-lattice-framework):** 4D orthogonal plane bisection (O(r^2)) and generalized NTT convolution (O(r^2 log_2 N log r)). [[Zenodo DOI: 10.5281/zenodo.22509388](https://doi.org/10.5281/zenodo.22509388)]
+3. **[Hierarchical-Dimension-Pairing-Framework](https://github.com/Andrew-J-Morris/Hierarchical-Dimension-Pairing-Framework):** 5D–8D odd-dimension slicing, OEIS A000333–A000336 verification, and N=1024 NTT scaling. [[Zenodo DOI: 10.5281/zenodo.22691273](https://doi.org/10.5281/zenodo.22691273)]
+4. **[Parity-Filtered-Bisection-DN-Lattices](https://github.com/Andrew-J-Morris/Parity-Filtered-Bisection-DN-Lattices):** Exact O(r^2) kissing-number root lattices (D_3 FCC, D_4 24-cell, and D_8). [[Zenodo DOI: 10.5281/zenodo.22824219](https://doi.org/10.5281/zenodo.22824219)]
 
-1.  **Foundational Paper (3D Row-Collapse & Discrete $\pi$):**
-    *   *Andrew J. Morris*, ["An Integer-Only Orthotropic Lattice Enumeration Framework and Asymptotic Convergence of Discrete Rational $\pi$"](https://zenodo.org/records/22282210), *Zenodo Preprint*, DOI: `10.5281/zenodo.22282210`.
-2.  **Follow-up Paper (4D Dimension-Pairing & Generalized NTT $N$-Space):**
-    *   *Andrew J. Morris*, ["A Dimension-Paired Combinatorial Framework: Asymptotic O(r^2) Reduction and O(r^2 log_2 N log r) Generalized Convolution for High-Dimensional Discrete Lattice Enumeration"](https://zenodo.org/records/22509388), *Zenodo Preprint*, DOI: `10.5281/zenodo.22509388`.
 
 ---
 
